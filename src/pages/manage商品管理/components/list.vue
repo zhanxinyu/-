@@ -9,19 +9,22 @@
     >
       <el-table-column prop="id" label="商品编号" sortable width="120">
       </el-table-column>
-      <el-table-column prop="specsname" label="商品名称" sortable width="120">
+      <el-table-column prop="goodsname" label="商品名称" sortable width="120">
       </el-table-column>
-      <el-table-column prop="attrs" label="商品价格" sortable width="120">
+     <el-table-column label="商品价格">
         <template slot-scope="scope">
-          <el-tag v-for="item in scope.row.attrs" :key="item">{{
-            item
-          }}</el-tag>
+         <span>{{scope.row.price}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="id" label="市场价格" sortable width="120">
+      <el-table-column label="市场价格">
+        <template slot-scope="scope">
+        <span>{{scope.row.market_price}}</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="id" label="图片" sortable width="120">
-        图片
+       <el-table-column label="图片">
+        <template slot-scope="scope">
+        <img :src="$imgPre+scope.row.img" alt="">
+        </template>
       </el-table-column>
       <el-table-column prop="stayus" label="是否新品" width="120">
         <template slot-scope="scope">
@@ -60,7 +63,7 @@ export default {
   // props: ["list"],
   computed: {
     ...mapGetters({
-      list: "specs/list",
+      list: "manage/list",
     }),
   },
   components: {},
@@ -69,7 +72,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      reqList: "specs/reqListAction",
+      reqList: "manage/reqListAction",
       reqCountAction: "specs/reqCountAction",
     }),
     edit(id) {

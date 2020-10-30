@@ -8,6 +8,7 @@ import menu from "./modules/menu"
 import role from "./modules/role"
 import sort from "./modules/sort"
 import specs from './modules/specs'
+import manage from "./modules/manage"
 
 export default new Vuex.Store({
     state,
@@ -18,6 +19,7 @@ export default new Vuex.Store({
         menu,
         role:role,
         sort,
-        specs
+        specs,
+        manage
     }
 })
