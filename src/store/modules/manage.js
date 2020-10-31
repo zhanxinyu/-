@@ -1,4 +1,4 @@
-import { reqManagList} from "../../util/request"
+import { reqManagList,reqManagCount} from "../../util/request"
 const state = {
     list: [],
     size: 2,
@@ -23,7 +23,7 @@ const mutations = {
 
 const actions = {
     reqListAction(context) {
-        reqManagList({ size: 10, page: 1 }).then(res => {
+        reqManagList({ size: context.state.size, page: context.state.page }).then(res => {
             console.log(res)
             let list = res.data.list ? res.data.list : [];
             //分页自动更新
@@ -40,8 +40,9 @@ const actions = {
         })
     },
     reqCountAction(context) {
-        reqSpecsCount().then(res => {
+        reqManagCount().then(res => {
             if (res.data.code === 200) {
+                console.log(res.data.list)
                 context.commit("changeTotal", res.data.list[0].total)
             }
         })

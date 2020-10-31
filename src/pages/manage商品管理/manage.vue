@@ -20,9 +20,9 @@ import { mapGetters, mapActions } from "vuex";
 export default {
    computed: {
     ...mapGetters({
-      list: "specs/list",
+      list: "manage/list",
       size: "specs/size",
-      total: "specs/total",
+      total: "manage/total",
     }),
   },
   components: {
@@ -53,18 +53,17 @@ export default {
       this.$refs.add.getOne(id);
     },
     ...mapActions({
-      reqCountAction:"specs/reqCountAction",
+      reqCountAction:"manage/reqCountAction",
       reqListAction:"specs/reqListAction",
-      changePageAction:"specs/changePageAction"
+      changePageAction:"manage/changePageAction"
     }),
     currentPage(page){
-      console.log(page)
       this.changePageAction(page)
     }
     
   },
   mounted() {
-    this.reqListAction()
+    // this.reqListAction()
     this.reqCountAction()
   },
 };

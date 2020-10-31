@@ -28,13 +28,13 @@
       </el-table-column>
       <el-table-column prop="stayus" label="是否新品" width="120">
         <template slot-scope="scope">
-          <el-button type="primary" v-if="scope.row.status == 1">是</el-button>
+          <el-button type="primary" v-if="scope.row.isnew == 1">是</el-button>
           <el-button type="info" v-else>否</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="stayus" label="是否热卖" width="120">
         <template slot-scope="scope">
-          <el-button type="primary" v-if="scope.row.status == 1">是</el-button>
+          <el-button type="primary" v-if="scope.row.ishot == 1">是</el-button>
           <el-button type="info" v-else>否</el-button>
         </template>
       </el-table-column>
@@ -56,7 +56,7 @@
   </div>
 </template>
 <script>
-import { reqSpecsDel } from "../../../util/request";
+import { reqManagDel } from "../../../util/request";
 import { alertSuccess, alertWarning } from "../../../util/alert";
 import { mapGetters, mapActions } from "vuex";
 export default {
@@ -73,12 +73,12 @@ export default {
   methods: {
     ...mapActions({
       reqList: "manage/reqListAction",
-      reqCountAction: "specs/reqCountAction",
+      reqCountAction: "manage/reqCountAction",
     }),
     edit(id) {
       this.$emit("edit", id);
     },
-    del(uid) {
+    del(id) {
       this.$confirm("你确定要删除吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -86,7 +86,7 @@ export default {
       })
         .then(() => {
           //发起请求删除数据
-          reqSpecsDel(uid).then((res) => {
+          reqManagDel(id).then((res) => {
             if (res.data.code === 200) {
               alertSuccess("删除成功");
               this.reqList();
