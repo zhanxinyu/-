@@ -64,8 +64,23 @@ export default {
     };
   },
   methods: {
+    checked() {
+      return new Promise((resolve, reject) => {
+        //验证数据是否均不为空
+        if (this.form.username === "") {
+          alertSuccess("用户名不能为空");
+          return;
+        }
+         if (this.form.password === "") {
+          alertSuccess("密码不能为空");
+          return;
+        }
+        resolve();
+      });
+    },
      add(){
-       reqManageAdd(this.form).then(res=>{
+      this.checked().then(()=>{
+         reqManageAdd(this.form).then(res=>{
          if(res.data.code===200){
            this.cancel();
            alertSuccess(res.data.msg);
@@ -73,6 +88,7 @@ export default {
            this.$emit("init")
          }
        })
+      })
      },
     //点击了取消按钮
     cancel() {
@@ -94,7 +110,8 @@ export default {
       })
     },
     update(){
-      reqManageUpdate(this.form).then(res=>{
+     this.checked().then(()=>{
+        reqManageUpdate(this.form).then(res=>{
         if(res.data.code===200){
           this.cancel()
           this.empty()
@@ -102,6 +119,7 @@ export default {
           this.$emit("init")
         }
       })
+     })
     }
   },
   mounted() {

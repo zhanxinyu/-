@@ -56,8 +56,25 @@ export default {
     };
   },
   methods: {
+        checked() {
+      return new Promise((resolve, reject) => {
+        //验证数据是否均不为空
+        if (this.form.rolename === "") {
+          alertSuccess("角色名称不能为空");
+          return;
+        }
+        if (this.form.menus === '[]') {
+          console.log("aaa")
+          alertSuccess("角色权限不能为空");
+          return;
+        }
+        resolve();
+      });
+    },
     add() {
-      this.form.menus = JSON.stringify(this.$refs.tree.getCheckedKeys());
+        this.form.menus = JSON.stringify(this.$refs.tree.getCheckedKeys());
+     this.checked().then(()=>{
+        // this.form.menus = JSON.stringify(this.$refs.tree.getCheckedKeys());
       reqRoleAdd(this.form).then((res) => {
         //获取菜单中的数据
         this.reqMenList();
@@ -67,6 +84,7 @@ export default {
         this.info.isShow = false;
         alertSuccess(res.data.msg);
       });
+     })
     },
     //清空数据
     empty() {
@@ -92,12 +110,12 @@ export default {
     },
     updata() {
        this.form.menus = JSON.stringify(this.$refs.tree.getCheckedKeys())
-      reqRoleUpate(this.form).then((res) => {
+      this.checked().then(()=>{ reqRoleUpate(this.form).then((res) => {
         alertSuccess(res.data.msg)
          this.info.isShow = false;
          this.reqMenList();
         this.reqMenRoleList();
-      });
+      });})
     },
     mounted() {
       this.reqMenList();

@@ -5,7 +5,7 @@
         <!-- 左边框 -->
         <el-menu
           router
-          default-active=""
+          default-active="0"
           unique-opened
           class="el-menu-vertical-demo"
           background-color="#20222a"
@@ -16,7 +16,7 @@
             <i class="el-icon-menu"></i>
             <span slot="title">首页</span>
           </el-menu-item>
-          <el-submenu index="1">
+          <!-- <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>系统设置</span>
@@ -43,11 +43,35 @@
               <el-menu-item index="/index/banner">轮播图管理</el-menu-item>
               <el-menu-item index="/index/seckill">秒杀活动</el-menu-item>
             </el-menu-item-group>
-          </el-submenu>
+          </el-submenu> -->
+
+          <!-- 动态侧边栏 -->
+          <div v-for="item in userInfo.menus" :key="item.id" >
+            <!-- 有目录 -->
+            <el-submenu :index="item.id+''" v-if="item.children">
+              <template slot="title">
+                <i :class="item.icon"></i>
+                <span>{{item.title}}</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item v-for="i in item.children" :key="i.id" :index="'/index'+i.url">{{i.title}}</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            
+            <!-- 没有目录 -->
+            <el-menu-item :index="'/index'+item.url" v-else>
+              <span slot="title">{{item.title}}</span>
+            </el-menu-item>
+          </div>
+
+
         </el-menu>
       </el-aside>
       <el-container>
-        <el-header>Header</el-header>
+        <el-header>
+           <span>{{userInfo.username}}</span>
+          <el-button type="primary" @click="logOut">退出</el-button>
+        </el-header>
         <el-main>
           <el-breadcrumb separator-class="el-icon-arrow-right" v-if="$route.name">
             <el-breadcrumb-item :to="{ path: '/index' }">首页</el-breadcrumb-item>
@@ -60,15 +84,24 @@
   </div>
 </template>
 <script>
+import {mapGetters,mapActions} from "vuex"
 export default {
+   computed:{
+    ...mapGetters({
+      userInfo:"userInfo"
+    })
+  },
   components: {},
   data() {
     return {};
   },
   methods: {
-    // index(){
-    //     this.$route.push('/index/home');
-    // },
+    ...mapActions(["changeUserInfoAction"]),
+    //退出登录
+    logOut(){
+      this.changeUserInfoAction({})
+      this.$router.push("/")
+    }
   },
   mounted() {},
 };

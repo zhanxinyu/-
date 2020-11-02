@@ -5,7 +5,6 @@
         <el-form-item label="上级分类" label-width="140px">
           <el-select v-model="form.pid" placeholder="请选择菜单">
             <el-option label="----请选择----" value=""></el-option>
-            <el-option label="顶级分类" :value="0"></el-option>
             <el-option v-for="item in list" :key="item.id" :label="item.catename" :value="item.id"></el-option>
             <!-- 循环请求回来渲染 -->
           </el-select>
@@ -78,8 +77,27 @@ export default {
     };
   },
   methods: {
+    checked() {
+      return new Promise((resolve, reject) => {
+        //验证数据是否均不为空
+         if (this.form.pid === "") {
+          alertSuccess("上级分类不能为空");
+          return;
+        }
+        if (this.form.catename === "") {
+          alertSuccess("名称不能为空");
+          return;
+        }
+        if (this.imgUrl === "") {
+          alertSuccess("图片不能为空");
+          return;
+        }
+        resolve();
+      });
+    },
     add() {
-      let data=new FormData()
+      this.checked().then(()=>{
+        let data=new FormData()
       for(let i in this.form){
         data.append(i,this.form[i])
       }
@@ -91,6 +109,7 @@ export default {
           this.reqList();
         }
       });
+      })
     },
       ...mapActions({
       reqList:"sort/reqListAction"
@@ -123,7 +142,8 @@ export default {
         for(let item in this.form){
           data.append(item,this.form[item])
         }
-      reqCateUpdate(data).then((res) => {
+     this.checked().then(()=>{
+        reqCateUpdate(data).then((res) => {
         if (res.data.code === 200) {
           this.cancel();
           this.empty();
@@ -131,6 +151,7 @@ export default {
           this.reqList()
         }
       });
+     })
     },
     changeFile2(e){
       console.log(e)

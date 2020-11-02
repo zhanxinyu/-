@@ -354,7 +354,8 @@ export default {
         data.append(i, obj[i]);
       }
 
-      reqManagUpdate(data).then((res) => {
+     this.checked().then(()=>{
+        reqManagUpdate(data).then((res) => {
         if (res.data.code === 200) {
           this.cancel();
           this.empty();
@@ -362,6 +363,7 @@ export default {
           this.reqList();
         }
       });
+     })
       })
     },
     

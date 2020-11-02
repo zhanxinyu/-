@@ -2,6 +2,18 @@ import axios from "axios"
 import qs from 'qs'
 import { alertWarning } from "../util/alert";
 import Vue from "vue"
+import store from "../store"
+import router from "../router"
+
+// 前端每一个请求,除了登录之外，都需要携带一个headers.authorization ,值是用户登录成功的token
+//请求拦截
+axios.interceptors.request.use(req=>{
+    //如果请求的地址不是登录，就配置请求头
+    if(req.url!==baseUrl+"/api/userlogin"){
+        req.headers.authorization=store.state.userInfo.token;
+    }
+    return req;
+})
 
 //响应拦截
 axios.interceptors.response.use((res)=>{
@@ -10,6 +22,13 @@ axios.interceptors.response.use((res)=>{
     //失败了，统一弹失败的弹框
     if (res.data.code !== 200) {
         alertWarning(res.data.msg)
+    }
+
+    //判断是否登录过期  msg="登录已过期或访问权限受限"
+    if(res.data.msg==="登录已过期或访问权限受限"){
+        router.push('/')
+        //用户信息置空
+        store.dispatch("changeUserInfoAction",{})
     }
     return res;
 })
@@ -369,3 +388,45 @@ export const reqManagDel=(id)=>{
     })
 }
 
+
+//会员列表
+export const reqHyList=()=>{
+    return axios({
+        url:baseUrl+"/api/memberlist",
+        method:"get",
+    })
+}
+
+
+//会员获取一条
+export const reqHyDetail=(uid)=>{
+    return  axios({
+        url:baseUrl+"/api/memberinfo",
+        method:"get",
+        params:{
+            uid:uid
+        }
+    })
+}
+
+
+//会员修改
+export const reqHyUpdate=(form)=>{
+    return  axios({
+        url:baseUrl+"/api/memberedit",
+        method:"post",
+        data:qs.stringify(form)
+    })
+}
+
+
+
+
+//////////登录
+export const reqLogin=(form)=>{
+    return axios({
+        url: baseUrl + "/api/userlogin",
+        method: "post",
+        data:qs.stringify(form)
+    })
+}

@@ -7,7 +7,11 @@
         </el-form-item>
 
         <el-form-item label="上级菜单" :label-width="width">
-          <el-select v-model="form.pid" placeholder="请选择菜单" @change="changePid">
+          <el-select
+            v-model="form.pid"
+            placeholder="请选择菜单"
+            @change="changePid"
+          >
             <el-option label="----请选择----" value=""></el-option>
             <el-option label="顶级菜单" :value="0"></el-option>
             <el-option
@@ -53,7 +57,7 @@
             <el-option
               v-for="item in indexRoyters"
               :key="item.path"
-              :value="'/'+item.path"
+              :value="'/' + item.path"
               :label="item.name"
             >
             </el-option>
@@ -68,7 +72,9 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="add" v-if="info.isAdd">添加</el-button>
+        <el-button type="primary" @click="add" v-if="info.isAdd"
+          >添加</el-button
+        >
         <el-button type="primary" @click="updata" v-else>修改</el-button>
       </div>
     </el-dialog>
@@ -103,6 +109,16 @@ export default {
     };
   },
   methods: {
+       checked() {
+      return new Promise((resolve, reject) => {
+        //验证数据是否均不为空
+        if (this.form.title === "") {
+          alertSuccess("菜单名称不能为空");
+          return;
+        }
+        resolve();
+      });
+    },
     //关闭弹框
     cancel() {
       this.info.isShow = false;
@@ -121,7 +137,8 @@ export default {
     },
     //添加数据
     add() {
-      reqMenuAdd(this.form).then((res) => {
+     this.checked().then(()=>{
+        reqMenuAdd(this.form).then((res) => {
         if (res.data.code == 200) {
           alertSuccess(res.data.msg);
           this.cancel();
@@ -132,6 +149,7 @@ export default {
           this.cancel();
         }
       });
+     })
     },
     look(id) {
       reqMenuListOne({ id: id }).then((res) => {
@@ -144,7 +162,8 @@ export default {
       reqMenList: "menu/reqMenList",
     }),
     updata(){
-      reqMenuUpate(this.form).then(res=>{
+     this.checked().then(()=>{
+        reqMenuUpate(this.form).then(res=>{
         if(res.data.code===200){
           alertSuccess(res.data.msg)
           this.cancel();
@@ -154,6 +173,7 @@ export default {
           this.cancel();
         }
       })
+     })
     },
      changePid(){
     if(this.form.pid===0){
